@@ -1,0 +1,28 @@
+#!/bin/bash
+
+file="$HOME/images/scrot/$(base $(date +%s)).png"
+if [[ $* == "-g" ]]; then
+    file="${file%.png}.gif"
+    ffcast -s byzanz-record -- -c -d 6 --delay=1 $file
+    gifsicle -O2 < $file > /tmp/.byzanz.gif
+    mv /tmp/.byzanz.gif $file
+elif [[ $* == "-v" ]]; then
+    file="${file%.png}.webm"
+    ffcast -s ffmpeg -- -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
+elif [[ $* == "-s" ]]; then
+    import -colorspace srgb +repage -silent $file
+else
+    DISPLAY=":0" import -colorspace srgb -window root -silent $file
+fi
+
+if [[ ${file##*.} == "png" && $(stat -c %s "$file") -gt 600000 ]]; then
+    jpeg="${file%.png}.jpeg"
+    convert "$file" -quality 90 "$jpeg"
+    file="$jpeg"
+fi
+
+rm -f /tmp/sscrot.*
+ln -s $file /tmp/sscrot.${file##*.}
+
+beep -l 20 -f 500 -n -l 10 -f 5000
+up -24 $file
