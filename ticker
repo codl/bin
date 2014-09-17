@@ -1,0 +1,74 @@
+#!/bin/python3
+
+import argparse
+import subprocess
+import time
+import unicodedata
+
+parser = argparse.ArgumentParser(description="Scroll text across a terminal")
+parser.add_argument('-s', '--separator', default=" … ")
+parser.add_argument('-f', '--force-scrolling', action='store_true')
+parser.add_argument('-r', '--reverse', action="store_const", const=-1, default=1, dest="direction")
+parser.add_argument('-m', '--mpd', action="store_true")
+parser.add_argument('-p', '--prefix', default="")
+parser.add_argument('--suffix', default="")
+
+args = parser.parse_args()
+
+text = ""
+if not args.mpd:
+    text = input(args.prefix)
+
+if args.mpd and args.prefix == "":
+    args.prefix = " ▶ "
+
+def getcolumns():
+    return int(subprocess.check_output(["tput", "cols"]))
+
+def getmpd():
+    mpc = subprocess.check_output(["mpc"])
+    lines = mpc.decode().split("\n")
+    return lines[0] if len(lines) >= 3 else ""
+
+def onscreen_len(s):
+    length = 0
+    for ch in s:
+        length += 2 if unicodedata.east_asian_width(ch) in ('F', 'W') else 1
+
+    return length
+
+pos=-1
+oldtext=""
+multitext=""
+while True:
+    output = ""
+    columns = getcolumns()
+
+    if args.mpd:
+        text = getmpd()
+
+    size = onscreen_len(args.prefix + text + args.suffix)
+    if (size <= columns and not args.force_scrolling) or text == "":
+        output = args.prefix + text + (" " * (columns - size)) + args.suffix
+    else:
+        if oldtext != text:
+            multitext = text
+            pos = -1
+        oldtext = text
+
+        while onscreen_len(args.prefix + multitext + args.suffix) < columns:
+            multitext=multitext + args.separator + text
+        multitext=multitext + args.separator + text
+
+        pos=pos + args.direction
+        if pos < 0: pos=onscreen_len(text + args.separator) - 1
+        if pos >= onscreen_len(text + args.separator): pos = 0
+
+        faked_columns = columns+1
+        output = "a" * (columns+1)
+        while onscreen_len(output) > columns:
+            faked_columns -= 1
+            output=args.prefix + multitext[pos:pos+faked_columns-onscreen_len(args.prefix+args.suffix)] + args.suffix
+
+    print("\n\x1b[1A" + output, end="")
+    time.sleep(.7)

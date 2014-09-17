@@ -1,0 +1,22 @@
+#!/bin/python3
+import sys
+import math
+
+"""
+base <integer>
+
+Returns a representation of the passed integer in “base 65”.
+"""
+
+base="-0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+
+number=int(sys.argv[1])
+result=[]
+for power in range(int(math.log(number ,len(base))) + 1):
+    #print(base[ int(number/(len(base)**power)) % len(base) ], end="")
+    #print(power);
+    result += [ base[ int(number/(len(base)**power)) % len(base) ] ]
+
+result.reverse()
+
+print("".join(result));
