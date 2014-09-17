@@ -1,0 +1,61 @@
+#!/bin/bash
+
+function upload(){
+    [[ "$DIR" == "" ]] && DIR="$(date +%y%m)"
+    [[ "$DEST" == "" ]] && DEST=$(basename "$SOURCE" | tr " \\/()[]\"&'%" '_')
+
+    URL="http://f.codl.fr/$DIR/$DEST"
+
+    printf "$URL" | xclip -i -selection primary 2> /dev/null
+    printf "$URL" | xclip -i -selection clipboard 2> /dev/null
+
+    curl -If $(dirname "$url") > /dev/null 2>&1 || ssh ana mkdir -p "/srv/files/$DIR"
+
+    if [[ -d "$SOURCE" ]]; then
+        rsync --progress --chmod=+rX -z -r "$SOURCE/" ana:"/srv/files/$DIR/$DEST"
+    elif [[ -r "$SOURCE" ]]; then
+        scp "$SOURCE" ana:"/srv/files/$DIR/$DEST"
+    else
+        # assume it's an URL to rehost
+        ssh ana wget "\"$SOURCE\" -O \"/srv/files/$DIR/$DEST\""
+    fi
+
+    if [[ $? == 0 ]]; then
+        echo "$URL"
+        beep -l 30 -f 800 -n -l 30 -f 1200
+        exit 0
+    fi
+}
+
+function usage(){
+    echo "Usage : up [-temp] [-root] <file> [destination]" > /dev/stderr
+    exit 1
+}
+
+while true; do
+    case $1 in
+        "")
+            usage
+            ;;
+        "-temp"|"-tmp"|"-24")
+            DIR="temp"
+            shift
+            ;;
+        "-root")
+            DIR="/"
+            shift
+            ;;
+        *)
+            if [[ "$SOURCE" == "" ]]; then
+                SOURCE=$1
+            elif [[ "$DEST" == "" ]]; then
+                DEST=$1
+            else
+                echo "Error: Too many arguments" > /dev/stderr
+                usage
+            fi
+            shift
+            [[ "$1" == "" ]] && upload
+    esac
+done
+
