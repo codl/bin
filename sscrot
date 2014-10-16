@@ -10,9 +10,9 @@ elif [[ $* == "-v" ]]; then
     file="${file%.png}.webm"
     ffcast -s ffmpeg -- -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
 elif [[ $* == "-s" ]]; then
-    import -colorspace srgb +repage -silent $file
+    maim -s -n $file
 else
-    DISPLAY=":0" import -colorspace srgb -window root -silent $file
+    maim $file
 fi
 
 if [[ ${file##*.} == "png" && $(stat -c %s "$file") -gt 600000 ]]; then
