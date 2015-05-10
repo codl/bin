@@ -5,10 +5,10 @@ import math
 """
 base <integer>
 
-Returns a representation of the passed integer in “base 64” (not to be confused with base64).
+Returns a representation of the passed integer in base 62.
 """
 
-base="-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+base="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 number=int(sys.argv[1])
 result=[]
