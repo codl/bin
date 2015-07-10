@@ -9,7 +9,9 @@ if [[ $* == "-g" ]]; then
     mv /tmp/.byzanz.gif $file
 elif [[ $* == "-v" ]]; then
     file="${file%.png}.webm"
-    ffcast -s ffmpeg -- -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
+    eval $(slop)
+    ffmpeg -f x11grab -s ${W}x$H -i :0+$X,$Y -f alsa -i default -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
+
 elif [[ $* == "-s" ]]; then
     maim -s -n --hidecursor $file
 else
