@@ -16,7 +16,7 @@ else
     maim $file
 fi
 
-if [[ ${file##*.} == "png" && $(stat -c %s "$file") -gt 600000 ]]; then
+if [[ ${file##*.} == "png" && $(stat -c %s "$file") -gt 500000 ]]; then
     jpeg="${file%.png}.jpeg"
     convert "$file" -quality 90 "$jpeg"
     file="$jpeg"
