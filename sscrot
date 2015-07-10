@@ -1,6 +1,7 @@
 #!/bin/bash
 
 file="$HOME/images/scrot/$[$(date +%s) % (3600 * 24 * 14)]$(tail -c 4 <<< $RANDOM).png"
+mkdir -p "$(dirname $file)"
 if [[ $* == "-g" ]]; then
     file="${file%.png}.gif"
     ffcast -s byzanz-record -- -c -d 6 --delay=1 $file
