@@ -11,7 +11,7 @@ elif [[ $* == "-v" ]]; then
     file="${file%.png}.webm"
     ffcast -s ffmpeg -- -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
 elif [[ $* == "-s" ]]; then
-    maim -s -n $file
+    maim -s -n --hidecursor $file
 else
     maim $file
 fi
