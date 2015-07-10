@@ -1,6 +1,8 @@
 #!/bin/bash
 
-file="$HOME/images/scrot/$[$(date +%s) % (3600 * 24 * 14)]$(tail -c 4 <<< $RANDOM).png"
+i=$[$(date +%s) % (3600 * 24 * 14)]$(tail -c 3 <<< $RANDOM)
+printf -v padded_i "%09d" $i
+file="$HOME/images/screenshots/${padded_i}.png"
 mkdir -p "$(dirname $file)"
 if [[ $* == "-g" ]]; then
     file="${file%.png}.gif"
