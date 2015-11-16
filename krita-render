@@ -1,0 +1,10 @@
+#!/bin/bash
+mkdir -p renders
+ls *.ora *.kra 2>/dev/null | while read file; do
+    out="renders/${file%%.[ok]ra}.png"
+    if [[ "$out" -ot "$file" ]]; then
+        echo "Rendering $file to $out"
+        krita --export --export-filename "$out" "$file" > /dev/null 2>&1
+    fi
+    touch -r "$file" "$out"
+done
