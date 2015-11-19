@@ -1,8 +1,7 @@
 #!/bin/bash
 
-i=$[$(date +%s) % (3600 * 24 * 14)]$(tail -c 3 <<< $RANDOM)
-printf -v padded_i "%09d" $i
-file="$HOME/images/screenshots/${padded_i}.png"
+name=$(uuidgen | tail -c 7)
+file="$HOME/images/screenshots/${name}.png"
 mkdir -p "$(dirname $file)"
 if [[ $* == "-g" ]]; then
     file="${file%.png}.gif"
