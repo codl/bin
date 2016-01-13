@@ -12,7 +12,7 @@ function upload(){
     curl -If $(dirname "$url") > /dev/null 2>&1 || ssh ana mkdir -p "/srv/files/$DIR"
 
     if [[ -d "$SOURCE" ]]; then
-        rsync --progress --chmod=+rX -z -r "$SOURCE/" ana:"/srv/files/$DIR/$DEST"
+        rsync --progress --chmod=+rX -z -r --exclude=".git/" "$SOURCE/" ana:"/srv/files/$DIR/$DEST"
     elif [[ -r "$SOURCE" ]]; then
         scp "$SOURCE" ana:"/srv/files/$DIR/$DEST"
     else
