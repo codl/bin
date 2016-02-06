@@ -4,7 +4,7 @@ function upload(){
     [[ "$DIR" == "" ]] && DIR="$(date +%y%m)"
     [[ "$DEST" == "" ]] && DEST=$(basename "$SOURCE" | tr " \\/()[]\"&'%" '_')
 
-    URL="http://f.codl.fr/$DIR/$DEST"
+    URL="https://f.codl.fr/$DIR/$DEST"
 
     printf "$URL" | xclip -i -selection primary 2> /dev/null
     printf "$URL" | xclip -i -selection clipboard 2> /dev/null
