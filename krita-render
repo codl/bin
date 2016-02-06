@@ -6,4 +6,11 @@ ls *.ora *.kra 2>/dev/null | while read file; do
         krita --export --export-filename "$out" "$file" > /dev/null 2>&1
     fi
     touch -r "$file" "$out"
+
+    quantout="${file%%.[ok]ra}-fs8.png"
+    if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
+        echo "Quantizing $out to $quantout"
+        pngquant 256 -f "$out"
+        touch -r "$file" "$quantout"
+    fi
 done
