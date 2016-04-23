@@ -5,7 +5,9 @@ ls *.ora *.kra 2>/dev/null | while read file; do
         echo "Rendering $file to $out"
         krita --export --export-filename "$out" "$file" > /dev/null 2>&1
     fi
-    touch -r "$file" "$out"
+    if [[ -f "$file" ]]; then
+        touch -r "$file" "$out"
+    fi
 
     quantout="${file%%.[ok]ra}-fs8.png"
     if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
