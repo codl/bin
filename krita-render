@@ -5,7 +5,7 @@ ls *.ora *.kra 2>/dev/null | while read file; do
         echo "Rendering $file to $out"
         krita --export --export-filename "$out" "$file" > /dev/null 2>&1
     fi
-    if [[ -f "$file" ]]; then
+    if [[ -f "$out" ]]; then
         touch -r "$file" "$out"
     fi
 
@@ -13,6 +13,8 @@ ls *.ora *.kra 2>/dev/null | while read file; do
     if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
         echo "Quantizing $out to $quantout"
         pngquant 256 -f "$out"
+    fi
+    if [[ -f "$quantout" ]]; then
         touch -r "$file" "$quantout"
     fi
 done
