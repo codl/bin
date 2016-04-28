@@ -7,14 +7,15 @@ ls *.ora *.kra 2>/dev/null | while read file; do
     fi
     if [[ -f "$out" ]]; then
         touch -r "$file" "$out"
-    fi
 
-    quantout="${file%%.[ok]ra}-fs8.png"
-    if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
-        echo "Quantizing $out to $quantout"
-        pngquant 256 -f "$out"
-    fi
-    if [[ -f "$quantout" ]]; then
-        touch -r "$file" "$quantout"
+        quantout="${file%%.[ok]ra}-fs8.png"
+        if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
+            echo "Quantizing $out to $quantout"
+            pngquant 256 -f "$out"
+        fi
+        if [[ -f "$quantout" ]]; then
+            touch -r "$file" "$quantout"
+        fi
+
     fi
 done
