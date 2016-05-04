@@ -1,21 +1,28 @@
 #!/bin/bash
 ls *.ora *.kra 2>/dev/null | while read file; do
-    out="${file%%.[ok]ra}.png"
-    if [[ "$out" -ot "$file" ]]; then
-        echo "Rendering $file to $out"
-        krita --export --export-filename "$out" "$file" > /dev/null 2>&1
+    pngout="${file%%.[ok]ra}.png"
+    tifout="${file%%.[ok]ra}.tif"
+    quantout="${file%%.[ok]ra}-fs8.png"
+    if [[ "$pngout" -ot "$file" && "$tifout" -ot "$file" ]]; then
+        echo "Rendering $file to $pngout"
+        krita --export --export-filename "$pngout" "$file" > /dev/null 2>&1
+        if [[ ! -f "$out" ]]; then
+            # probably failed because of non-standard colour profile
+            echo "Failed, trying $tifout"
+            krita --export --export-filename "$tifout" "$file" > /dev/null 2>&1
+        fi
     fi
-    if [[ -f "$out" ]]; then
-        touch -r "$file" "$out"
-
-        quantout="${file%%.[ok]ra}-fs8.png"
-        if [[ $(wc -c < "$out") -ge 1000000 && "$quantout" -ot "$file" ]]; then
-            echo "Quantizing $out to $quantout"
-            pngquant 256 -f "$out"
-        fi
-        if [[ -f "$quantout" ]]; then
-            touch -r "$file" "$quantout"
-        fi
-
+    if [[ -f "$pngout" && $(wc -c < "$pngout") -ge 1000000 && "$quantout" -ot "$file" ]]; then
+        echo "Quantizing $pngout to $quantout"
+        pngquant 256 -f "$pngout"
+    fi
+    if [[ -f "$pngout" ]]; then
+        touch -r "$file" "$pngout"
+    fi
+    if [[ -f "$tifout" ]]; then
+        touch -r "$file" "$tifout"
+    fi
+    if [[ -f "$quantout" ]]; then
+        touch -r "$file" "$quantout"
     fi
 done
