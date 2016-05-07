@@ -6,7 +6,7 @@ ls *.ora *.kra 2>/dev/null | while read file; do
     if [[ "$pngout" -ot "$file" && "$tifout" -ot "$file" ]]; then
         echo "Rendering $file to $pngout"
         krita --export --export-filename "$pngout" "$file" > /dev/null 2>&1
-        if [[ ! -f "$out" ]]; then
+        if [[ ! -f "$pngout" ]]; then
             # probably failed because of non-standard colour profile
             echo "Failed, trying $tifout"
             krita --export --export-filename "$tifout" "$file" > /dev/null 2>&1
