@@ -4,25 +4,19 @@ function upload(){
     [[ "$DIR" == "" ]] && DIR="$(date +%y%m)"
     [[ "$DEST" == "" ]] && DEST=$(basename "$SOURCE" | tr " \\/()[]\"&'%" '_')
 
-    URL="https://f.codl.fr/$DIR/$DEST"
+    URL="https://codl-public.s3.amazonaws.com/$DIR/$DEST"
 
     printf "$URL" | xclip -i -selection primary 2> /dev/null
     printf "$URL" | xclip -i -selection clipboard 2> /dev/null
 
-    curl -If $(dirname "$url") > /dev/null 2>&1 || ssh ana mkdir -p "/srv/files/$DIR"
-
     if [[ -d "$SOURCE" ]]; then
-        rsync --progress --chmod=+rX -z -r --exclude=".git/" "$SOURCE/" ana:"/srv/files/$DIR/$DEST"
-    elif [[ -r "$SOURCE" ]]; then
-        scp "$SOURCE" ana:"/srv/files/$DIR/$DEST"
+        rclone copyto --exclude=".git/" "$SOURCE" "s3:codl-public/$DIR/$DEST"
     else
-        # assume it's an URL to rehost
-        ssh ana wget "\"$SOURCE\" -O \"/srv/files/$DIR/$DEST\""
+        rclone copyto "$SOURCE" "s3:codl-public/$DIR/$DEST"
     fi
 
     if [[ $? == 0 ]]; then
         echo "$URL"
-        beep -l 30 -f 800 -n -l 30 -f 1200
         exit 0
     fi
 }
