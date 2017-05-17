@@ -6,8 +6,10 @@ function upload(){
 
     URL="https://codl-public.s3.amazonaws.com/$DIR/$DEST"
 
-    printf "$URL" | xclip -i -selection primary 2> /dev/null
-    printf "$URL" | xclip -i -selection clipboard 2> /dev/null
+    if [[ -e /bin/xclip ]]; then
+        printf "$URL" | xclip -i -selection primary 2> /dev/null
+        printf "$URL" | xclip -i -selection clipboard 2> /dev/null
+    fi
 
     if [[ -d "$SOURCE" ]]; then
         rclone copyto --exclude=".git/" "$SOURCE" "s3:codl-public/$DIR/$DEST"
