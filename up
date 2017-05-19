@@ -12,9 +12,9 @@ function upload(){
     fi
 
     if [[ -d "$SOURCE" ]]; then
-        rclone copyto -e --exclude=".git/" "$SOURCE" "s3:codl-public/$DIR/$DEST"
+        rclone copyto -v --exclude=".git/" "$SOURCE" "s3:codl-public/$DIR/$DEST"
     else
-        rclone copyto -e "$SOURCE" "s3:codl-public/$DIR/$DEST"
+        rclone copyto -v "$SOURCE" "s3:codl-public/$DIR/$DEST"
     fi
 
     if [[ $? == 0 ]]; then
