@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name=$(uuidgen -r)
+name="$(date -I)-$(uuidgen -r)"
 file="$HOME/images/screenshots/${name}.png"
 mkdir -p "$(dirname $file)"
 if [[ $* == "-g" ]]; then
