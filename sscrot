@@ -3,17 +3,8 @@
 name="$(date -Ins | sed "y/,:/--/;s/+.*//")"
 file="$HOME/images/screenshots/${name}.png"
 mkdir -p "$(dirname $file)"
-if [[ $* == "-g" ]]; then
-    file="${file%.png}.gif"
-    ffcast -s byzanz-record -- -c -d 6 --delay=1 $file
-    gifsicle -O2 < $file > /tmp/.byzanz.gif
-    mv /tmp/.byzanz.gif $file
-elif [[ $* == "-v" ]]; then
-    file="${file%.png}.webm"
-    eval $(slop)
-    ffmpeg -f x11grab -s ${W}x$H -i :0+$X,$Y -f alsa -i default -vcodec libvpx -vb 1600k -quality best -f webm -t 10 $file
 
-elif [[ $* == "-s" ]]; then
+if [[ $* == "-s" ]]; then
     maim -s -n --hidecursor $file
 else
     maim $file
