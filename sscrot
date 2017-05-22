@@ -1,7 +1,7 @@
 #!/bin/bash
 
-name="$(date -Ins | sed "y/,:T/--\//;s/+.*//").png"
-file="$HOME/images/screenshots/${name}"
+name="$(date -Ins | sed "y/,:/--/;s/+.*//")"
+file="$HOME/images/screenshots/${name}.png"
 mkdir -p "$(dirname $file)"
 
 if [[ $* == "-s" ]]; then
@@ -12,7 +12,6 @@ fi
 
 if [[ ${file##*.} == "png" && $(stat -c %s "$file") -gt 500000 ]]; then
     jpeg="${file%.png}.jpeg"
-    name="${name%.png}.jpeg"
     convert "$file" -quality 90 "$jpeg"
     file="$jpeg"
 fi
@@ -21,4 +20,4 @@ rm -f /tmp/sscrot.*
 ln -s $file /tmp/sscrot.${file##*.}
 
 beep -l 20 -f 500 -n -l 10 -f 5000
-up -temp $file $name
+up -24 $file
