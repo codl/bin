@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd "/home/codl/.local/share/Steam/steamapps/common/Crypt of the NecroDancer"
+./NecroDancer.sh
