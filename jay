@@ -3,4 +3,4 @@
 cd $HOME/notes/jay
 
 file=$(date --rfc-3339=date)
-atom $file
+$EDITOR $file
