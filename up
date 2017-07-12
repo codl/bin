@@ -34,7 +34,7 @@ while true; do
             usage
             ;;
         "-temp"|"-tmp"|"-24")
-            DIR="temp"
+            DIR="temp/$(date +%m%d)"
             shift
             ;;
         "-root")
