@@ -18,6 +18,8 @@ function upload(){
     fi
 
     if [[ $? == 0 ]]; then
+        curl -s -XPURGE "$URL" > /dev/null
+        curl -s -XHEAD "$URL" > /dev/null
         echo "$URL"
         exit 0
     fi
