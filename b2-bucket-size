@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source /home/codl/.profile
+
+set -eufo pipefail
+
+SIZE=0
+
+F=$(mktemp --tmpdir b2-bucket-size.json.XXXX)
+b2 list-file-versions $1 > $F
+while true; do
+    SIZE=$[$SIZE + $(jq -r '[.files[].contentLength] | add' $F)]
+    NEXT=$(jq -r '.nextFileName' $F)
+    NEXTID=$(jq -r '.nextFileId' $F)
+    [[ $NEXT == 'null' ]] && break
+    b2 list-file-versions $1 $NEXT $NEXTID > $F
+done
+
+echo $SIZE
