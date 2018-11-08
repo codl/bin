@@ -19,6 +19,7 @@ function upload(){
 
     if [[ $? == 0 ]]; then
         echo "$URL"
+        notify-send uploaded
         exit 0
     fi
 }
