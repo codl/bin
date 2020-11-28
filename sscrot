@@ -19,5 +19,4 @@ fi
 rm -f /tmp/sscrot.*
 ln -s $file /tmp/sscrot.${file##*.}
 
-beep -l 20 -f 500 -n -l 10 -f 5000
-up -24 $file
+up --temp $file

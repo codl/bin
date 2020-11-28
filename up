@@ -11,10 +11,12 @@ function upload(){
         printf "$URL" | xclip -i -selection clipboard 2> /dev/null
     fi
 
+    mkdir -p /array/f.codl.fr/$DIR
+
     if [[ -d "$SOURCE" ]]; then
-        rclone copyto -L -v --exclude=".git/" "$SOURCE" "s3:codl-public/$DIR/$DEST"
+        rsync -r --exclude=".git/" "$SOURCE" "/array/f.codl.fr/$DIR/$DEST"
     else
-        rclone copyto -L -v "$SOURCE" "s3:codl-public/$DIR/$DEST"
+        cp "$SOURCE" "/array/f.codl.fr/$DIR/$DEST"
     fi
 
     if [[ $? == 0 ]]; then
@@ -27,7 +29,7 @@ function upload(){
 }
 
 function usage(){
-    echo "Usage : up [-temp] [-root] <file> [destination]" > /dev/stderr
+    echo "Usage : up [-t|--temp] [--root] <file> [destination]" > /dev/stderr
     exit 1
 }
 
@@ -36,12 +38,12 @@ while true; do
         "")
             usage
             ;;
-        "-temp"|"-tmp"|"-24")
+        "--temp"|"-t"|"-temp")
             DIR="temp/$(date +%m%d)"
             shift
             ;;
-        "-root")
-            DIR="/"
+        "--root")
+            DIR=""
             shift
             ;;
         *)
