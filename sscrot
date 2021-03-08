@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name="$(date -Is | sed "y/,:/--/;s/+.*//")-$(cat /dev/urandom | tr -cd "oO0" | head -c 4)"
+name="$(date -Is | sed "y/,:/--/;s/+.*//")-$(hostname --short)-$(cat /dev/urandom | tr -cd "oO0" | head -c 4)"
 file="$HOME/images/screenshots/${name}.png"
 mkdir -p "$(dirname $file)"
 
