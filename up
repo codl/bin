@@ -16,7 +16,7 @@ function upload(){
     if [[ -d "$SOURCE" ]]; then
         rsync -r --exclude=".git/" "$SOURCE" "/array/f.codl.fr/$DIR/$DEST"
     else
-        cp "$SOURCE" "/array/f.codl.fr/$DIR/$DEST"
+        cp --reflink=auto "$SOURCE" "/array/f.codl.fr/$DIR/$DEST"
     fi
 
     if [[ $? == 0 ]]; then
