@@ -3,7 +3,9 @@
 command -v oxipng >/dev/null 2>&1 && HAS_OXIPNG=1
 command -v pngquant >/dev/null 2>&1 && HAS_PNGQUANT=1
 
+
 ls *.ora *.kra 2>/dev/null | while read file; do
+    [[ $file == *-autosave.kra ]] && continue
     pngout="${file%%.[ok]ra}.png"
     tifout="${file%%.[ok]ra}.tif"
     quantout="${file%%.[ok]ra}-fs8.png"
