@@ -1,4 +1,8 @@
 #!/bin/bash
+
+command -v oxipng >/dev/null 2>&1 && HAS_OXIPNG=1
+command -v pngquant >/dev/null 2>&1 && HAS_PNGQUANT=1
+
 ls *.ora *.kra 2>/dev/null | while read file; do
     pngout="${file%%.[ok]ra}.png"
     tifout="${file%%.[ok]ra}.tif"
@@ -12,7 +16,11 @@ ls *.ora *.kra 2>/dev/null | while read file; do
             krita --export --export-filename "$tifout" "$file" > /dev/null 2>&1
         fi
     fi
-    if [[ -f "$pngout" && $(wc -c < "$pngout") -ge 1000000 && "$quantout" -ot "$file" ]]; then
+    if [[ $HAS_OXIPNG == 1 && -f "$pngout" && $(wc -c < "$pngout") -ge 1000000 ]]; then
+        echo "Crunching $pngout with oxipng"
+        oxipng "$pngout"
+    fi
+    if [[ $HAS_PNGQUANT == 1 && -f "$pngout" && $(wc -c < "$pngout") -ge 1000000 && "$quantout" -ot "$file" ]]; then
         echo "Quantizing $pngout to $quantout"
         pngquant 256 -f "$pngout"
     fi
